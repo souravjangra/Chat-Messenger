@@ -6,5 +6,3 @@ Users will be able to sign into the messenger with a display name,password and c
 communicate in, as well as see and join existing channels. Once a channel is selected, users will
 be able to send and receive messages with one another in real time.
 
-
-Testing readme file.
