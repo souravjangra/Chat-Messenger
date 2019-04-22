@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 
-public class ClientGui extends Thread{
+public class ClientGUI extends Thread{
 
   final JTextPane jtextFilDiscu = new JTextPane();
   final JTextPane jtextListUsers = new JTextPane();
