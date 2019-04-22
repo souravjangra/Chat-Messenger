@@ -29,7 +29,7 @@ public class ClientGUI extends Thread{
   PrintWriter output;
   Socket server;
 
-  public ClientGui() {
+  public ClientGUI() {
     this.serverName = "localhost";
     this.PORT = 12345;
     this.name = "nickname";
@@ -271,7 +271,7 @@ public class ClientGUI extends Thread{
   }
 
   public static void main(String[] args) throws Exception {
-    ClientGui client = new ClientGui();
+    ClientGUI client = new ClientGUI();
   }
 
   // For reading new incoming messages
