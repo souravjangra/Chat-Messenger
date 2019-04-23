@@ -31,7 +31,7 @@ public class ClientGUI extends Thread{
 
   public ClientGUI() {
     this.serverName = "localhost";
-    this.PORT = 12345;
+    this.PORT = 8080;
     this.name = "nickname";
 
     String fontfamily = "Arial, sans-serif";
@@ -71,15 +71,22 @@ public class ClientGUI extends Thread{
     final JScrollPane jtextInputChatSP = new JScrollPane(jtextInputChat);
     jtextInputChatSP.setBounds(25, 350, 650, 50);
 
-    // send buttons
+    // send button
     final JButton jsbtn = new JButton("Send");
     jsbtn.setFont(font);
     jsbtn.setBounds(575, 410, 100, 35);
-
+    
     // Disconnect button
     final JButton jsbtndeco = new JButton("Disconnect");
     jsbtndeco.setFont(font);
     jsbtndeco.setBounds(25, 410, 130, 35);
+
+    // send chat record to the user's email address
+
+    final JButton jsbtn2 = new JButton("Email Chat");
+    jsbtn2.setFont(font);
+    jsbtn2.setBounds(180,410,130,35);
+
 
     jtextInputChat.addKeyListener(new KeyAdapter() {
       // send message on Enter
@@ -109,6 +116,19 @@ public class ClientGUI extends Thread{
         sendMessage();
       }
     });
+
+    jsbtn2.addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent ae){
+            JavaRunCommand ctt = new JavaRunCommand();
+            ctt.convertToText();
+            JavaRunCommand jrc = new JavaRunCommand();
+            jrc.RunCmd();
+        }
+    });
+
+    
+
+    
 
     // Connection view
     final JTextField jtfName = new JTextField(this.name);
@@ -177,6 +197,7 @@ public class ClientGUI extends Thread{
           jfr.remove(jtfAddr);
           jfr.remove(jcbtn);
           jfr.add(jsbtn);
+          jfr.add(jsbtn2);
           jfr.add(jtextInputChatSP);
           jfr.add(jsbtndeco);
           jfr.revalidate();
@@ -314,4 +335,93 @@ public class ClientGUI extends Thread{
       e.printStackTrace();
     }
   }
+}
+
+class JavaRunCommand {
+
+  public void convertToText()
+  {
+      try
+      {
+          // Reading the object from a file 
+          FileInputStream file = new FileInputStream("messages.ser"); 
+          ObjectInputStream in = new ObjectInputStream(file);
+          // Method for deserialization of object 
+          ArrayList<message> object1= new ArrayList<>();
+          object1 = (ArrayList)in.readObject(); // type casting it 
+          in.close(); 
+          file.close(); 
+          //System.out.println("Object has been deserialized "); 
+          //System.out.println(object1.chatList);
+          //--------------------Writing in file --------------------//
+          FileWriter fileWriter =new FileWriter("messages.txt");
+          // Always wrap FileWriter in BufferedWriter.
+          BufferedWriter bufferedWriter =new BufferedWriter(fileWriter);
+          // Note that write() does not automatically
+          // append a newline character.
+          /*bufferedWriter.write("Hello there,");
+          bufferedWriter.write(" here is some text.");
+          bufferedWriter.newLine();
+          bufferedWriter.write("We are writing");
+          bufferedWriter.write(" the text to the file.");
+          */
+          // Always close files.
+          for(message i :object1)
+          {
+            bufferedWriter.write(i.user+" : "+i.messageStr);
+            bufferedWriter.newLine();
+          }
+          bufferedWriter.close();
+      } 
+        
+      catch(IOException ex) 
+      { 
+          System.out.println("IOException is caught"); 
+      } 
+        
+      catch(ClassNotFoundException ex) 
+      { 
+          System.out.println("ClassNotFoundException is caught"); 
+      }
+       
+  }
+
+    public void RunCmd() {
+
+        String s = null;
+
+        try {
+            
+	    // run the Unix commands to execute
+            // using the Runtime exec method to:
+            Process p = Runtime.getRuntime().exec("python3 email2.py");
+            
+            BufferedReader stdInput = new BufferedReader(new 
+                 InputStreamReader(p.getInputStream()));
+
+            BufferedReader stdError = new BufferedReader(new 
+                 InputStreamReader(p.getErrorStream()));
+
+            // read the output from the command
+            System.out.println("Here is the standard output of the command:\n");
+            while ((s = stdInput.readLine()) != null) {
+                System.out.println(s);
+            }
+            
+            // read any errors from the attempted command
+            System.out.println("Here is the standard error of the command (if any):\n");
+            while ((s = stdError.readLine()) != null) {
+                System.out.println(s);
+            }
+            
+            // System.exit(0);
+        }
+        catch (IOException e) {
+            System.out.println("exception happened - here's what I know: ");
+            e.printStackTrace();
+            // System.exit(-1);
+        }
+    }
+
+    
 }
