@@ -110,6 +110,7 @@ class serialisation implements Serializable
             //System.out.println(object1.chatList);
             for(message i :object1)
             {
+
               System.out.println(i);
             }
         } 
@@ -125,6 +126,10 @@ class serialisation implements Serializable
         }
          
     }
+
+    
+    
+    
 
 }
 public class Server 
