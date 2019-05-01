@@ -2,6 +2,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -134,27 +135,52 @@ public class Server
   private List<User> clients;
   private ServerSocket server;
   private serialisation serObject= new serialisation();
-  public static void main(String[] args) throws IOException 
+  public static void main(String[] args) throws Exception 
   {
-    new Server(8080).run();
+    Server s = new Server(args[0],8090);
+    // System.out.println("\r\nRunning Server: " + 
+    //             "Host=" + s.getSocketAddress().getHostAddress());
+    s.run();
+    
   }
 
-  public Server(int port) 
-  {
-    this.port = port;
-    this.clients = new ArrayList<User>();
+  public Server(String ipAddress,int port) throws Exception{
+    if (ipAddress != null && !ipAddress.isEmpty()) 
+{          this.server = new ServerSocket(0, 1, InetAddress.getByName(ipAddress));
+          this.port = port;
+          this.clients = new ArrayList<User>();
+}        else 
+{          this.server = new ServerSocket(0, 1, InetAddress.getLocalHost());
+          this.port = port;
+          this.clients = new ArrayList<User>();
+}  }
+  
+  public InetAddress getSocketAddress() {
+  return this.server.getInetAddress();
   }
+
+  public int getPort() {
+    return this.server.getLocalPort();
+  }
+
+  // public Server(int port) 
+  // {
+  //   this.port = port;
+  //   this.clients = new ArrayList<User>();
+  // }
 
   public void run() throws IOException 
-  {
-    server = new ServerSocket(port) 
+  {  
+    // InetAddress ip = InetAddress.getSocketAddress();
+
+    server = new ServerSocket(port)
     {
       protected void finalize() throws IOException 
       {
         this.close();
       }
     };
-    System.out.println("Port "+port+" is now open.");
+    System.out.println(" Port="+port+" is now open.");
 
     while (true)
     {

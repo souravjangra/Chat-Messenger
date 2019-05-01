@@ -19,6 +19,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.*;
 
+import java.net.InetAddress;
+
+
 public class ClientGUI extends Thread{
 
   final JTextPane jtextFilDiscu = new JTextPane();
@@ -34,8 +37,8 @@ public class ClientGUI extends Thread{
   Socket server;
 
   public ClientGUI() {
-    this.serverName = "10.184.0.28";
-    this.PORT = 8080;
+    this.serverName = "localhost";
+    this.PORT = 8090;
     this.name = "nickname";
 
     String fontfamily = "Arial, sans-serif";
@@ -144,7 +147,7 @@ public class ClientGUI extends Thread{
 
     // To check if those fields are not empty
     jtfName.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
-    jtfport.getDocument().addDocutextFilDmentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
+    jtfport.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
     jtfAddr.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
 
     // position of the modules
