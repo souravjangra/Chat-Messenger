@@ -32,6 +32,11 @@ class message implements Serializable
 class serialisation implements Serializable
 {
     message mObj;
+    String fileName;
+    serialisation(String fileName)
+    {
+      this.fileName=fileName;
+    }
     ArrayList<message> chatList = new ArrayList<>();
     public boolean addMessage(String User,String tempChat)
     {
@@ -39,12 +44,12 @@ class serialisation implements Serializable
         try
         {
           // if the .ser already exist take the data from it and append the data to it, otherwise make new .ser object
-            if(doesExist("messages.ser"))
+            if(doesExist(fileName))
             {
               ArrayList<message> node = new ArrayList<message>();
               try
               {
-                FileInputStream file = new FileInputStream("messages.ser"); 
+                FileInputStream file = new FileInputStream(fileName); 
                 ObjectInputStream in = new ObjectInputStream(file);
 
                 // Method for deserialization of object 
@@ -59,7 +64,7 @@ class serialisation implements Serializable
               }
               try
               {
-                FileOutputStream fs = new FileOutputStream("messages.ser");
+                FileOutputStream fs = new FileOutputStream(fileName);
                 ObjectOutputStream os = new ObjectOutputStream(fs);
                 os.writeObject(node);
                 os.close(); 
@@ -71,7 +76,7 @@ class serialisation implements Serializable
             }
             else
             {
-              FileOutputStream fs = new FileOutputStream("messages.ser");
+              FileOutputStream fs = new FileOutputStream(fileName);
               ObjectOutputStream os = new ObjectOutputStream(fs);
 
               chatList.add(mObj);
@@ -86,7 +91,7 @@ class serialisation implements Serializable
         }     
       return true;
     }
-    public boolean doesExist(String fileName)
+    public static boolean doesExist(String fileName)
     {
       String currPath=System.getProperty("user.dir");
         System.out.println("Working Directory = " +currPath);
@@ -96,46 +101,16 @@ class serialisation implements Serializable
       else
         return false;
     }
-    public void readSerFile()
-    {
-        try
-        {    
-            // Reading the object from a file 
-            FileInputStream file = new FileInputStream("messages.ser"); 
-            ObjectInputStream in = new ObjectInputStream(file);
-            // Method for deserialization of object 
-            ArrayList<message> object1= new ArrayList<>();
-            object1 = (ArrayList)in.readObject(); // type casting it 
-            in.close(); 
-            file.close(); 
-            System.out.println("Object has been deserialized "); 
-            //System.out.println(object1.chatList);
-            for(message i :object1)
-            {
 
-              System.out.println(i);
-            }
-        } 
-          
-        catch(IOException ex) 
-        { 
-            System.out.println("IOException is caught"); 
-        } 
-          
-        catch(ClassNotFoundException ex) 
-        { 
-            System.out.println("ClassNotFoundException is caught"); 
-        }
-         
-    }  
 
 }
+
 public class Server 
 {
   private int port;
   private List<User> clients;
   private ServerSocket server;
-  private serialisation serObject= new serialisation();
+  private serialisation serObject= new serialisation("messages.ser");
   public static void main(String[] args) throws IOException 
   {
     new Server(8080).run();
@@ -146,7 +121,44 @@ public class Server
     this.port = port;
     this.clients = new ArrayList<User>();
   }
-
+  public void LoadMessages(String SerFileName,User signedInUser)
+  {
+   try
+    {
+        // Reading the object from a file 
+        FileInputStream file = new FileInputStream(SerFileName); 
+        ObjectInputStream in = new ObjectInputStream(file);
+        // Method for deserialization of object 
+        ArrayList<message> object1= new ArrayList<>();
+        object1 = (ArrayList)in.readObject(); // type casting it 
+        in.close(); 
+        file.close(); 
+        for(message i :object1)
+        {
+          if(i.user.equals(signedInUser.getNickname()))
+            {
+              signedInUser.getOutStream().println("\n<p class=\"tab\" align=\"right\" >"+i.messageStr+"</p>");
+              //System.out.println("message send was "+i.user+" and current user is "+signedInUser.getNickname());
+            }
+          else
+            {
+              //System.out.println("message send was "+i.user+" and current user is "+signedInUser.getNickname());
+              signedInUser.getOutStream().println("\n<p class=\"tab\" align=\"left\" >"+i.messageStr+"    <sub>"+i.user+"</sub>"+"</p>");
+            }
+        }
+        //bufferedWriter.close();
+    } 
+        
+    catch(IOException ex) 
+    { 
+        System.out.println("IOException is caught"); 
+    } 
+      
+    catch(ClassNotFoundException ex) 
+    { 
+        System.out.println("ClassNotFoundException is caught"); 
+    }
+  }
   public void run() throws IOException 
   {
     InetAddress ip =  Inet4Address.getByName("127.0.0.1"); //10.184.0.28/Chat-Messenger/ //127.0.0.1
@@ -158,6 +170,9 @@ public class Server
       }
     };
     System.out.println("Port "+port+" is now open.");
+    
+    
+
     while (true)
     {
       // accepts a new client
@@ -171,10 +186,9 @@ public class Server
 
       // create new User
       User newUser = new User(client, nickname);
-
       // add newUser to list
       this.clients.add(newUser);
-
+      LoadMessages("messages.ser",newUser);
       // Welcome msg
       newUser.getOutStream().println(
           "<img src='https://www.kizoa.fr/img/e8nZC.gif' height='42' width='42'>"
@@ -204,7 +218,7 @@ public class Server
       }
     for (User client : this.clients) {
   if(userSender.getNickname()==client.getNickname())
-      client.getOutStream().println("<p class=\"tab\" align=\"right\" >"+msg+"    <sub>"+userSender.toString()+"</sub>"+"</p>");
+      client.getOutStream().println("<p class=\"tab\" align=\"right\" >"+msg+"</p>");
       else
       client.getOutStream().println("<p class=\"tab\" align=\"left\" >"+msg+"    <sub>"+userSender.toString()+"</sub>"+"</p>");    
     }

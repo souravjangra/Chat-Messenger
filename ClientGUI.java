@@ -309,6 +309,7 @@ public class ClientGUI extends Thread{
         try {
           message = input.readLine();
           if(message != null){
+            if(message.length()>1)
             if (message.charAt(0) == '[') {
               message = message.substring(1, message.length()-1);
               ArrayList<String> ListUser = new ArrayList<String>(
