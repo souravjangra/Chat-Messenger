@@ -125,11 +125,7 @@ class serialisation implements Serializable
             System.out.println("ClassNotFoundException is caught"); 
         }
          
-    }
-
-    
-    
-    
+    }  
 
 }
 public class Server 
@@ -277,7 +273,7 @@ class UserHandler implements Runnable {
               );
         }
 
-      // Gestion du changement
+        // Change manage
       }
       else if (message.charAt(0) == '#'){
         user.changeColor(message);
@@ -339,7 +335,6 @@ class User {
     this.getOutStream().println("<b>Failed to change color</b>");
   }
 
-  // getteur
   public PrintStream getOutStream(){
     return this.streamOut;
   }

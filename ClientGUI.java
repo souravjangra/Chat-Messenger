@@ -14,6 +14,10 @@ import javax.swing.text.html.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import java.util.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.*;
 
 public class ClientGUI extends Thread{
 
@@ -30,7 +34,7 @@ public class ClientGUI extends Thread{
   Socket server;
 
   public ClientGUI() {
-    this.serverName = "localhost";
+    this.serverName = "10.184.0.28";
     this.PORT = 8080;
     this.name = "nickname";
 
@@ -123,6 +127,8 @@ public class ClientGUI extends Thread{
             ctt.convertToText();
             JavaRunCommand jrc = new JavaRunCommand();
             jrc.RunCmd();
+
+          
         }
     });
 
@@ -138,7 +144,7 @@ public class ClientGUI extends Thread{
 
     // To check if those fields are not empty
     jtfName.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
-    jtfport.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
+    jtfport.getDocument().addDocutextFilDmentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
     jtfAddr.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
 
     // position of the modules
@@ -366,6 +372,19 @@ class JavaRunCommand {
           bufferedWriter.write(" the text to the file.");
           */
           // Always close files.
+          // bufferedWriter.write(i.user+" : "+i.messageStr);
+          
+
+          Date date = new Date();
+          long time = date.getTime();
+          Timestamp ts = new Timestamp(time);
+
+          String timeStamp = new SimpleDateFormat("yyyy-MM-dd HH-mm-ss").format(new java.util.Date());
+
+          
+          bufferedWriter.write(timeStamp);
+          bufferedWriter.newLine();
+
           for(message i :object1)
           {
             bufferedWriter.write(i.user+" : "+i.messageStr);
@@ -385,6 +404,24 @@ class JavaRunCommand {
       }
        
   }
+    //   public static String GetTimeStamp()
+    // {
+    //   // Date date= new Date();
+    //   Date date = new Date();
+    //   long time = date.getTime();
+    //   // System.out.println("Time in Milliseconds: " + time);
+
+    //   Timestamp ts = new Timestamp(time);
+
+    //   date.setTime(ts.getTime());
+    //   String formattedDate = new SimpleDateFormat("yyyyMMdd").format(date);
+    //   return formattedDate;
+    //   // System.out.println("CurrGetTimeStampent Time Stamp: " + ts);
+        
+    // }
+    // public static String timestampAsString(Timestamp timestamp) {
+    //   return DateTimeFormat.forPattern("yyyyMMdd").print(timestamp.getTime());
+    // }
 
     public void RunCmd() {
 
