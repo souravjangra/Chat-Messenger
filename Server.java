@@ -188,13 +188,13 @@ public class Server
       User newUser = new User(client, nickname);
       // add newUser to list
       this.clients.add(newUser);
-      LoadMessages("messages.ser",newUser);
       // Welcome msg
       newUser.getOutStream().println(
           "<img src='https://www.kizoa.fr/img/e8nZC.gif' height='42' width='42'>"
           + "<b>Welcome</b> " + newUser.toString() +
           "<img src='https://www.kizoa.fr/img/e8nZC.gif' height='42' width='42'>"
           );
+      LoadMessages("messages.ser",newUser);
       
       // create a new thread for newUser handling
       new Thread(new UserHandler(this, newUser)).start();
