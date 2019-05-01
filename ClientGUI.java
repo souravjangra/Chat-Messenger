@@ -34,9 +34,9 @@ public class ClientGUI extends Thread{
   Socket server;
 
   public ClientGUI() {
-    this.serverName = "10.184.0.28";
+    this.serverName = "localhost";
     this.PORT = 8080;
-    this.name = "nickname";
+    this.name = "";
 
     String fontfamily = "Arial, sans-serif";
     Font font = new Font(fontfamily, Font.PLAIN, 15);
@@ -144,7 +144,7 @@ public class ClientGUI extends Thread{
 
     // To check if those fields are not empty
     jtfName.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
-    jtfport.getDocument().addDocutextFilDmentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
+    jtfport.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
     jtfAddr.getDocument().addDocumentListener(new TextListener(jtfName, jtfport, jtfAddr, jcbtn));
 
     // position of the modules

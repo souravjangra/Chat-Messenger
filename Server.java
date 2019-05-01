@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.net.Inet4Address; 
+import java.net.InetAddress; 
 import java.io.ObjectOutputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -147,7 +149,8 @@ public class Server
 
   public void run() throws IOException 
   {
-    server = new ServerSocket(port) 
+    InetAddress ip =  Inet4Address.getByName("127.0.0.1"); //10.184.0.28/Chat-Messenger/ //127.0.0.1
+    server = new ServerSocket(port,3,ip) 
     {
       protected void finalize() throws IOException 
       {
@@ -155,7 +158,6 @@ public class Server
       }
     };
     System.out.println("Port "+port+" is now open.");
-
     while (true)
     {
       // accepts a new client
@@ -201,8 +203,10 @@ public class Server
         System.out.println("something went wrong");
       }
     for (User client : this.clients) {
-    client.getOutStream().println(
-        "The message from "+userSender.toString() + " is <span>: " + msg+"</span>");
+  if(userSender.getNickname()==client.getNickname())
+      client.getOutStream().println("<p class=\"tab\" align=\"right\" >"+msg+"    <sub>"+userSender.toString()+"</sub>"+"</p>");
+      else
+      client.getOutStream().println("<p class=\"tab\" align=\"left\" >"+msg+"    <sub>"+userSender.toString()+"</sub>"+"</p>");    
     }
   }
 
